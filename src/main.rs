@@ -1,20 +1,23 @@
-use todo::todo::{todo::Todo, handler::json_handler::JsonSerializer, task::Task};
+use todo::todo::task::Task;
+use todo::todo::{handler::json_handler::JsonSerializer, todo::Todo};
+use todo::ui::ui::TodoUI;
 
 fn main() {
-    let mut todo = Todo::new(
-        Box::new(JsonSerializer::new("todo.json"))
-    ).expect("Failed to initialize Todo");
+    let serializer = JsonSerializer::new("todo.json");
+
+    let mut todo = Todo::new(Box::new(serializer)).expect("Failed to initialize Todo");
 
     todo.add_task(Task {
         description: "Hello World".to_string(),
         done: false,
     }).expect("Failed to add task");
 
-    println!("{:?}", todo.get_all_tasks());
-}
+    todo.add_task(Task {
+        description: "Hello World very very very long long long long long very long task very sakdjaskdjaksdjaksdasdasdasdasdasdasda asd asd asd asd asd".to_string(),
+        done: true,
+    }).expect("Failed to add task");
 
-// todo.from_json(json);
-// todo.save_to_disk('path/to/file.json');
-// todo.set_done_status(id);
-// todo.delete_task(id);
-// todo.get_all_tasks();
+    let mut ui = TodoUI::new(todo);
+
+    ui.run().expect("Failed to run UI");
+}
